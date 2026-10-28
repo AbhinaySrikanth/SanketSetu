@@ -1,95 +1,37 @@
-# ISL English-Gujarati Translator App 📱🤟
+# SanketSetu
 
-An Android application designed to bridge communication gaps using Indian Sign Language (ISL) for digits and common phrases. This project integrates real-time gesture recognition with translation features, making it easier for users to understand and communicate using ISL in both English and Gujarati languages.
+An offline Android app to learn a curated set of Indian Sign Language (ISL) signs, practise them, and show phrase cards to other people. English and Gujarati meanings. Formerly "ISL English-Gujarati App".
 
----
+**It is not a translator.** It does not interpret sentences or conversations and does not replace an interpreter.
 
-## 🚀 Features
+## What is implemented
 
-- 📷 Real-time camera capture to identify hand gestures (0-9)
-- 🤖 Offline gesture recognition using a trained Random Forest model (converted to `.tflite`)
-- 🌐 Translation support for both English and Gujarati
-- 🎥 Integrated sign image/video viewer for selected gestures
-- 🔒 Runtime camera permission handling
-- 🧠 Modular architecture with separate files for camera, model, translation logic
+| Area | Status |
+|---|---|
+| Learn: 172 signs in 11 lessons (pictures and videos), search, saved signs, recently viewed | Implemented |
+| Practice: spaced-repetition flashcards, multiple-choice quizzes, local progress | Implemented |
+| Communicate: 4 situations of phrase cards with a large display mode | Implemented |
+| Camera check for digits 0-9 | Experimental. Pipeline runs on the emulator; not yet tested with a real hand or phone (see MODEL_CARD.md). If a model file is missing the screen says it is unavailable. |
+| Daily goal, day streak, review of missed signs, optional 6 pm reminder (only on days you have not practised) | Implemented |
+| Half-speed playback for sign videos | Implemented |
+| Phrase board: pin phrases, swipe between phrases in a situation, speak aloud with the device's own English/Gujarati voice (spoken language, not a sign) | Implemented. Gujarati voice depends on the device. |
+| Sign-it practice: camera asks for a digit and scores only a stable correct match | Experimental, same limits as the camera check |
+| Settings: Gujarati on/off, text size, high contrast, goal, reminder, reset, privacy | Implemented |
+| Continuous or sentence-level recognition, text-to-speech, cloud features | Not implemented, not planned for this release |
 
----
+Gujarati text has not had a native-speaker review. Previously reported accuracy figures are not reproducible and are not claimed.
 
-## 🧠 Machine Learning
+## Structure
 
-- **Algorithm**: Random Forest with 150 decision trees
-- **Dataset Split**: 80% training / 20% testing
-- **Input Format**: 28x28 grayscale gesture images
-- **Output**: Predictions for digits 0–9
-- **Model Deployment**: Trained model exported as `.tflite` for integration with Android app
+- `data/` sign catalog (single source of truth, media are compile-time `R` references), user store, spaced repetition, session state
+- `ml/` recognition: MediaPipe hand landmarks -> 42 floats -> TFLite digit model -> `RecognitionPolicy` (threshold + smoothing)
+- `ui/` single-activity Compose app: `Nav.kt` holds the route map and back rules, `screens/` one file per area
+- `model/` research scripts (training, evaluation). Not part of the app.
 
----
+## Build
 
-## 📁 Project Structure
+```
+gradlew.bat :app:testDebugUnitTest :app:assembleDebug
+```
 
-├── app/
-│ ├── java/com/abhinay/ISLEnglishGujaratiApp/
-│ │ ├── CameraActivity.kt
-│ │ ├── GestureActivity.kt
-│ │ ├── Classifier.kt
-│ │ ├── TranslationData.kt
-│ │ └── ModelInspector.kt
-│ ├── res/
-│ │ ├── drawable/ ← Contains gesture images (zero.png to nine.png)
-│ │ ├── layout/ ← XML layouts (camera_activity.xml, gesture_activity.xml)
-│ │ └── raw/ ← Optional: sign videos (if any)
-│ └── assets/
-│ └── model.tflite ← Trained ML model
-
-yaml
-Copy
-Edit
-
----
-
-## 🛠️ How It Works
-
-1. User launches the app and grants camera permission.
-2. A gesture is captured using the device camera.
-3. The captured image is processed and passed to the classifier.
-4. The model predicts the corresponding digit (0-9).
-5. The result is mapped to a translation and displayed with visual support.
-
----
-
-## 📦 Requirements
-
-- Android Studio (Electric Eel or above)
-- Android SDK 24+
-- Internet not required (runs fully offline)
-- Device with CameraX support
-
----
-
-## 🔧 Setup Instructions
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/ISL-English-Gujarati-Translator.git
-Open the project in Android Studio.
-
-Place gesture images (zero.png to nine.png) inside the res/drawable folder.
-
-Add the model.tflite file to the assets directory.
-
-Run the app on an emulator or physical device.
-
-📄 License
-This project is developed for educational and non-commercial use. All resources (model, translations, code) are created from scratch or adapted under fair use.
-
-🙌 Acknowledgements
-CameraX by Android Jetpack
-
-TensorFlow Lite for on-device ML
-
-Gujarati translations adapted for accurate regional representation
-
-👨‍💻 Author
-Abhinay Srikanth Khamithkar
-Android Developer | Machine Learning Enthusiast
-Email: abhinay.khamithkar@example.comh
+Requires JDK 17 and the Android SDK (platform 36). Release builds use R8 and resource shrinking; signing is not configured in the repository.

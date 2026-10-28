@@ -1,26 +1,26 @@
 package com.abhinay.ISLEnglishGujaratiApp
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.abhinay.ISLEnglishGujaratiApp.ui.AppViewModel
+import com.abhinay.ISLEnglishGujaratiApp.ui.SanketSetuNav
+import com.abhinay.ISLEnglishGujaratiApp.ui.theme.SanketSetuTheme
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen() // shown only while the process starts; no artificial delay
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
-
-        val getStartedButton = findViewById<Button>(R.id.getStartedBtn)
-        val aboutButton = findViewById<Button>(R.id.aboutBtn)
-
-        getStartedButton.setOnClickListener {
-            val intent = Intent(this, DifficultyLevelActivity::class.java)
-            startActivity(intent)
-        }
-
-        aboutButton.setOnClickListener {
-            val intent = Intent(this, AboutActivity::class.java)
-            startActivity(intent)
+        enableEdgeToEdge()
+        setContent {
+            val vm: AppViewModel = viewModel()
+            val state by vm.state.collectAsStateWithLifecycle()
+            SanketSetuTheme(state.textScale, state.highContrast) { SanketSetuNav(vm) }
         }
     }
 }

@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+/app/build
+model/venv/
+model/tf15_env/
+__pycache__/

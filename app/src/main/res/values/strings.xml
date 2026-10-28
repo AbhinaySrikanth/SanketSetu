@@ -1,8 +1,3 @@
 <resources>
-    <string name="app_name">ISL English-Gujarati App</string>
-    <string name="splash">Splash Screen Image</string>
-    <string name="diff">Select Difficulty Level</string>
-    <string name="bgnr">Beginner</string>
-    <string name="intr">Intermediate</string>
-    <string name="adv">Advanced</string>
+    <string name="app_name">SanketSetu</string>
 </resources>
